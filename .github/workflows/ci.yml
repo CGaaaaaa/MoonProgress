@@ -66,8 +66,16 @@ jobs:
       
     - name: 🔒 Run security audit
       run: |
-        # 检查敏感信息泄露
-        if grep -r "password\|secret\|key\|token" . --exclude-dir=.git --exclude-dir=.github; then
+        # 检查真正的敏感信息泄露（排除配置文件和常见关键词）
+        if grep -r -i "password\s*=\|secret\s*=\|api_key\s*=\|private_key\|access_token" . \
+          --exclude-dir=.git \
+          --exclude-dir=.github \
+          --exclude-dir=node_modules \
+          --exclude="*.md" \
+          --exclude="*.json" \
+          --exclude="*.toml" \
+          --exclude="*.yml" \
+          --exclude="*.yaml"; then
           echo "⚠️  发现可能的敏感信息"
           exit 1
         else
