@@ -1,0 +1,78 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    name: 🧪 Test & Build
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🌙 Setup MoonBit
+      uses: moonbitlang/setup-moonbit@v1
+      with:
+        version: 'latest'
+        
+    - name: 📋 Check moon version
+      run: |
+        moon version
+        moon --help
+        
+    - name: 🔧 Build project
+      run: |
+        moon build
+        
+    - name: 🧪 Run tests
+      run: |
+        moon test
+        
+    - name: 📊 Run examples
+      run: |
+        cd examples
+        moon run cli_demo
+        
+  lint:
+    name: 🔍 Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🌙 Setup MoonBit
+      uses: moonbitlang/setup-moonbit@v1
+      with:
+        version: 'latest'
+        
+    - name: 🔍 Check code format
+      run: |
+        moon fmt --check
+        
+    - name: 📝 Lint code
+      run: |
+        moon check
+
+  security:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔒 Run security audit
+      run: |
+        # 检查敏感信息泄露
+        if grep -r "password\|secret\|key\|token" . --exclude-dir=.git --exclude-dir=.github; then
+          echo "⚠️  发现可能的敏感信息"
+          exit 1
+        else
+          echo "✅ 安全检查通过"
+        fi

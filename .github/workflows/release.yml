@@ -1,0 +1,94 @@
+name: 🚀 Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Release version (e.g., v1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  release:
+    name: 📦 Create Release
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📦 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🌙 Setup MoonBit
+      uses: moonbitlang/setup-moonbit@v1
+      with:
+        version: 'latest'
+        
+    - name: 🧪 Run tests
+      run: |
+        moon test
+        
+    - name: 🔧 Build project
+      run: |
+        moon build
+        
+    - name: 📦 Package release
+      run: |
+        mkdir -p dist
+        cp -r src dist/
+        cp -r examples dist/
+        cp README.md dist/
+        cp moon.mod.json dist/
+        cp moon.pkg.json dist/
+        
+    - name: 🗜️ Create archive
+      run: |
+        cd dist
+        tar -czf ../moonprogress-${{ github.ref_name }}.tar.gz .
+        cd ..
+        
+    - name: 📋 Generate release notes
+      id: release_notes
+      run: |
+        cat > release_notes.md << 'EOF'
+        ## 🌙 MoonProgress ${{ github.ref_name }}
+        
+        ### ✨ 新特性
+        - 🚀 零依赖、高性能的命令行进度条
+        - 🎨 多种内置样式和丰富的自定义选项
+        - 📊 完整的API文档和使用示例
+        - ✅ 全面的测试覆盖
+        
+        ### 📦 安装方式
+        ```bash
+        # 克隆仓库
+        git clone https://github.com/CGaaaaaa/MoonProgress.git
+        cd MoonProgress
+        
+        # 构建项目
+        moon build
+        
+        # 运行测试
+        moon test
+        
+        # 运行示例
+        cd examples && moon run cli_demo
+        ```
+        
+        ### 🔗 相关链接
+        - 📚 [完整文档](https://github.com/CGaaaaaa/MoonProgress#readme)
+        - 💡 [使用示例](https://github.com/CGaaaaaa/MoonProgress/tree/main/examples)
+        - 🧪 [测试用例](https://github.com/CGaaaaaa/MoonProgress/tree/main/tests)
+        EOF
+        
+    - name: 🚀 Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        body_path: release_notes.md
+        files: |
+          moonprogress-${{ github.ref_name }}.tar.gz
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

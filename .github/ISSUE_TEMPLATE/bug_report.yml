@@ -1,0 +1,81 @@
+name: 🐛 Bug Report
+description: 报告一个bug来帮助我们改进
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您使用 MoonProgress！请详细描述遇到的问题，这将帮助我们更快地解决bug。
+
+  - type: textarea
+    id: description
+    attributes:
+      label: 🐛 Bug描述
+      description: 请清楚简洁地描述这个bug
+      placeholder: 描述您遇到的问题...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 🔄 复现步骤
+      description: 提供复现bug的步骤
+      placeholder: |
+        1. 执行 '...'
+        2. 点击 '....'
+        3. 滚动到 '....'
+        4. 看到错误
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: ✅ 期望行为
+      description: 描述您期望发生的行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: ❌ 实际行为
+      description: 描述实际发生的行为
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: 🌍 环境信息
+      description: 请提供相关的环境信息
+      value: |
+        - OS: [e.g. macOS 14.0, Ubuntu 22.04, Windows 11]
+        - MoonBit版本: [e.g. 0.1.20231201]
+        - MoonProgress版本: [e.g. v1.0.0]
+        - 终端: [e.g. Terminal.app, iTerm2, CMD, PowerShell]
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: 📝 额外信息
+      description: 添加任何其他与问题相关的信息、截图等
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 检查清单
+      description: 请确认以下事项
+      options:
+        - label: 我已经搜索了现有的issues，确认这不是重复问题
+          required: true
+        - label: 我已经阅读了文档和README
+          required: true
+        - label: 我提供了完整的复现步骤
+          required: true

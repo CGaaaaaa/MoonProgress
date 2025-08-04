@@ -1,0 +1,101 @@
+name: ✨ Feature Request
+description: 建议一个新功能或改进
+title: "[FEATURE] "
+labels: ["enhancement", "feature-request"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您对 MoonProgress 的关注！我们很乐意听到您的想法和建议。
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: 🤔 问题描述
+      description: 这个功能请求是否与某个问题相关？请描述一下。
+      placeholder: 我在使用时遇到了困扰，因为...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: 💡 期望的解决方案
+      description: 描述您希望看到的功能
+      placeholder: 我希望能够...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 🔄 备选方案
+      description: 描述您考虑过的其他解决方案或功能
+      placeholder: 我也考虑过...
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: 📊 优先级
+      description: 这个功能对您有多重要？
+      options:
+        - 低 - 可有可无的改进
+        - 中 - 会很有用的功能
+        - 高 - 非常需要的功能
+        - 紧急 - 阻碍使用的关键功能
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: 🏷️ 功能类别
+      description: 这个功能属于哪个类别？
+      options:
+        - 📊 进度条样式
+        - ⚙️ API改进
+        - 🎨 UI/UX改进
+        - 📝 文档改进
+        - 🧪 测试相关
+        - 🚀 性能优化
+        - 🔧 开发体验
+        - 🌍 国际化
+        - 🔌 集成功能
+        - 📦 打包/分发
+        - 其他
+    validations:
+      required: true
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: 🛠️ 实现想法
+      description: 如果您有具体的实现想法，请分享
+      placeholder: 可以通过以下方式实现...
+
+  - type: textarea
+    id: examples
+    attributes:
+      label: 📋 使用示例
+      description: 提供一些代码示例展示期望的API或用法
+      placeholder: |
+        ```moonbit
+        // 期望的使用方式
+        let progress = ProgressBar::new()
+        progress.set_style("新样式")
+        ```
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: ✅ 检查清单
+      description: 请确认以下事项
+      options:
+        - label: 我已经搜索了现有的issues，确认这不是重复请求
+          required: true
+        - label: 我已经阅读了文档，确认当前没有这个功能
+          required: true
+        - label: 这个功能与MoonProgress的目标相符
+          required: true
