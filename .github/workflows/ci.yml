@@ -1,71 +1,68 @@
-name: CI/CD Pipeline
+name: CI
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   test:
-    name: 🧪 Test & Build
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
-      
-    - name: 🌙 Setup MoonBit
-      uses: moonbitlang/setup-moonbit@v1
+    - uses: actions/checkout@v4
+    
+    - name: Setup MoonBit
+      uses: hustcer/setup-moonbit@v1
       with:
-        version: 'latest'
-        
-    - name: 📋 Check moon version
+        version: "latest"
+    
+    - name: Check MoonBit installation
       run: |
-        moon version
-        moon --help
-        
-    - name: 🔧 Build project
+        moon version --all
+        which moon
+    
+    - name: Install dependencies
+      run: |
+        moon install
+    
+    - name: Check code format
+      run: |
+        moon fmt --check
+    
+    - name: Run tests
+      run: |
+        moon test --enable-coverage
+    
+    - name: Generate coverage report
+      run: |
+        moon coverage report -f cobertura -o coverage.xml
+        moon coverage report -f html
+    
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: |
+          coverage.xml
+          _coverage/
+    
+    - name: Build project
       run: |
         moon build
-        
-    - name: 🧪 Run tests
-      run: |
-        moon test
-        
-    - name: 📊 Run examples
+    
+    - name: Run examples
       run: |
         cd examples
         moon run cli_demo
         
-  lint:
-    name: 🔍 Code Quality
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
-      
-    - name: 🌙 Setup MoonBit
-      uses: moonbitlang/setup-moonbit@v1
-      with:
-        version: 'latest'
-        
-    - name: 🔍 Check code format
-      run: |
-        moon fmt --check
-        
-    - name: 📝 Lint code
-      run: |
-        moon check
-
   security:
     name: 🔒 Security Scan
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📦 Checkout code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
       
     - name: 🔒 Run security audit
       run: |
