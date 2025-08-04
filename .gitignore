@@ -15,3 +15,18 @@ target/
 
 # Log files
 *.log
+
+# Coverage reports (if generated)
+coverage/
+_coverage/
+*.coverage
+coverage.xml
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS generated files
+Thumbs.db
+ehthumbs.db
