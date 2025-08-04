@@ -73,7 +73,7 @@ jobs:
         moon test
         
         # 运行示例
-        cd examples && moon run cli_demo
+        cd examples && moon run examples
         ```
         
         ### 🔗 相关链接

@@ -55,7 +55,7 @@ jobs:
     - name: Run examples
       run: |
         cd examples
-        moon run cli_demo
+        moon run examples
         
   security:
     name: 🔒 Security Scan
