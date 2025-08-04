@@ -1,0 +1,17 @@
+# MoonBit build outputs
+target/
+.mooncakes/
+
+# System files
+.DS_Store
+*.tmp
+*.cache
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Log files
+*.log

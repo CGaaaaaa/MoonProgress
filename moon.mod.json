@@ -1,0 +1,10 @@
+{
+  "name": "MoonProgress",
+  "version": "0.1.0",
+  "deps": {},
+  "readme": "README.md",
+  "repository": "https://github.com/consingliu/MoonProgress",
+  "license": "Apache-2.0",
+  "keywords": ["progress", "progress-bar", "cli", "terminal", "console"],
+  "description": "A configurable command-line progress bar library for MoonBit"
+}
