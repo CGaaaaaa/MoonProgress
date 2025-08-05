@@ -1,9 +1,9 @@
 // 专门针对未覆盖代码路径的测试
 
 ///| 创建测试辅助函数来模拟时间流逝和速率计算
-fn create_pb_with_real_stats(total : Int, current : Int) -> @src.ProgressBar {
+fn create_pb_with_real_stats(total : Int, current : Int) -> ProgressBar {
   // 创建进度条并多次更新来产生真实的统计数据
-  let mut pb = @src.new(total)
+  let mut pb = new(total)
     .set_show_rate(true)
     .set_show_eta(true)
     .set_show_elapsed(true)
@@ -18,7 +18,7 @@ fn create_pb_with_real_stats(total : Int, current : Int) -> @src.ProgressBar {
 ///| 测试format_time的小时格式 - 通过模拟长时间运行
 test "format_time小时格式测试" {
   // 创建一个显示已用时间的进度条，通过多次更新来触发format_time的小时分支
-  let pb = @src.new(10000).set_show_elapsed(true).set_show_eta(true)
+  let pb = new(10000).set_show_elapsed(true).set_show_eta(true)
 
   // 模拟大量更新来可能触发时间格式化
   let mut updated_pb = pb
@@ -31,7 +31,7 @@ test "format_time小时格式测试" {
 
 ///| 测试format_time的分钟格式
 test "format_time分钟格式测试" {
-  let pb = @src.new(1000).set_show_elapsed(true).set_show_eta(true).update(500)
+  let pb = new(1000).set_show_elapsed(true).set_show_eta(true).update(500)
   let rendered = pb.render()
   assert_eq(rendered.length() > 0, true)
 }
@@ -39,7 +39,7 @@ test "format_time分钟格式测试" {
 ///| 测试format_rate的大数值单位缩放 (M单位)
 test "format_rate百万级单位测试" {
   // 尝试通过大数值更新来触发format_rate的M单位分支
-  let pb = @src.new(10000000)
+  let pb = new(10000000)
     .set_show_rate(true)
     .set_unit_scale(true)
     .set_unit("bytes")
@@ -54,7 +54,7 @@ test "format_rate百万级单位测试" {
 
 ///| 测试format_rate的千级单位缩放 (k单位)
 test "format_rate千级单位测试" {
-  let pb = @src.new(100000)
+  let pb = new(100000)
     .set_show_rate(true)
     .set_unit_scale(true)
     .set_unit("items")
@@ -69,8 +69,8 @@ test "format_rate千级单位测试" {
 ///| 测试get_terminal_width的Some分支
 test "get_terminal_width的Some分支测试" {
   // 设置终端宽度以触发Some分支
-  @src.set_terminal_width(100)
-  let pb = @src.new(100)
+  set_terminal_width(100)
+  let pb = new(100)
     .set_dynamic_width(true)
     .set_ncols(Some(120)) // 这应该触发Some分支
     .update(50)
@@ -92,12 +92,12 @@ test "时间和速率显示综合测试" {
 ///| 测试ETA计算的各种情况
 test "ETA计算边界测试" {
   // 测试ETA = 0的情况（已完成）
-  let pb_complete = @src.new(100).set_show_eta(true).update(100)
+  let pb_complete = new(100).set_show_eta(true).update(100)
   let rendered_complete = pb_complete.render()
   assert_eq(rendered_complete.length() > 0, true)
 
   // 测试有ETA的情况
-  let pb_partial = @src.new(100).set_show_eta(true).update(25)
+  let pb_partial = new(100).set_show_eta(true).update(25)
   let rendered_partial = pb_partial.render()
   assert_eq(rendered_partial.length() > 0, true)
 }
@@ -105,7 +105,7 @@ test "ETA计算边界测试" {
 ///| 测试速率显示的边界条件
 test "速率显示边界条件测试" {
   // 测试速率为0的情况
-  let pb_zero = @src.new(100).set_show_rate(true).update(0)
+  let pb_zero = new(100).set_show_rate(true).update(0)
   let rendered_zero = pb_zero.render()
   assert_eq(rendered_zero.length() > 0, true)
 
@@ -117,7 +117,7 @@ test "速率显示边界条件测试" {
 
 ///| 测试miniters的实际触发条件
 test "miniters实际触发测试" {
-  let pb = @src.new(1000).set_miniters(50) // 设置较大的miniters
+  let pb = new(1000).set_miniters(50) // 设置较大的miniters
 
   // 小幅更新，应该被miniters限制
   let pb1 = pb.update(10)
@@ -129,7 +129,7 @@ test "miniters实际触发测试" {
 
 ///| 测试mininterval的触发
 test "mininterval触发测试" {
-  let pb = @src.new(100).set_mininterval(0.5).set_miniters(1)
+  let pb = new(100).set_mininterval(0.5).set_miniters(1)
 
   // 快速连续更新
   let pb1 = pb.update(10)
@@ -140,7 +140,7 @@ test "mininterval触发测试" {
 
 ///| 测试平滑速率计算的分支
 test "平滑速率计算测试" {
-  let pb = @src.new(1000).set_smooth(true)
+  let pb = new(1000).set_smooth(true)
 
   // 多次更新来触发平滑速率计算的不同分支
   let pb1 = pb.update(100)
@@ -153,7 +153,7 @@ test "平滑速率计算测试" {
 
 ///| 测试样本点数组的边界情况
 test "样本点数组管理测试" {
-  let mut pb = @src.new(100).set_smooth(true)
+  let mut pb = new(100).set_smooth(true)
 
   // 进行超过10次的更新来触发样本点数组的清理逻辑
   for i = 1; i <= 15; i = i + 1 {
@@ -165,7 +165,7 @@ test "样本点数组管理测试" {
 ///| 测试动态宽度计算的各种配置
 test "动态宽度计算详细测试" {
   // 测试所有配置项都开启的情况
-  let pb_full = @src.new(100)
+  let pb_full = new(100)
     .set_dynamic_width(true)
     .set_desc("测试任务")
     .set_prefix("前缀")
@@ -183,7 +183,7 @@ test "动态宽度计算详细测试" {
   assert_eq(rendered_full.contains("后缀"), true)
 
   // 测试最小动态宽度的情况
-  let pb_minimal = @src.new(100)
+  let pb_minimal = new(100)
     .set_dynamic_width(true)
     .set_ncols(Some(20)) // 很小的终端宽度
     .update(50)
@@ -194,12 +194,12 @@ test "动态宽度计算详细测试" {
 ///| 测试render函数的平滑进度分支
 test "render平滑进度测试" {
   // 测试平滑关闭的情况
-  let pb_no_smooth = @src.new(100).set_smooth(false).update(30)
+  let pb_no_smooth = new(100).set_smooth(false).update(30)
   let rendered_no_smooth = pb_no_smooth.render()
   assert_eq(rendered_no_smooth.length() > 0, true)
 
   // 测试平滑开启的情况
-  let pb_smooth = @src.new(100).set_smooth(true).update(30)
+  let pb_smooth = new(100).set_smooth(true).update(30)
   let rendered_smooth = pb_smooth.render()
   assert_eq(rendered_smooth.length() > 0, true)
 }
@@ -207,7 +207,7 @@ test "render平滑进度测试" {
 ///| 测试所有显示选项的组合
 test "显示选项组合测试" {
   // 测试只显示ETA的情况
-  let pb_eta_only = @src.new(100)
+  let pb_eta_only = new(100)
     .set_show_percent(false)
     .set_show_count(false)
     .set_show_rate(false)
@@ -218,7 +218,7 @@ test "显示选项组合测试" {
   assert_eq(rendered_eta.length() > 0, true)
 
   // 测试只显示已用时间的情况
-  let pb_elapsed_only = @src.new(100)
+  let pb_elapsed_only = new(100)
     .set_show_percent(false)
     .set_show_count(false)
     .set_show_rate(false)
@@ -229,7 +229,7 @@ test "显示选项组合测试" {
   assert_eq(rendered_elapsed.length() > 0, true)
 
   // 测试什么都不显示的情况
-  let pb_minimal = @src.new(100)
+  let pb_minimal = new(100)
     .set_show_percent(false)
     .set_show_count(false)
     .set_show_rate(false)
@@ -243,19 +243,19 @@ test "显示选项组合测试" {
 ///| 测试百分比显示的边界情况
 test "百分比显示边界测试" {
   // 测试恰好100%的情况
-  let pb_100 = @src.new(100).set_show_percent(true).update(100)
+  let pb_100 = new(100).set_show_percent(true).update(100)
   let rendered_100 = pb_100.render()
   assert_eq(rendered_100.contains("100%"), true)
 
   // 测试小于100%的情况
-  let pb_99 = @src.new(100).set_show_percent(true).update(99)
+  let pb_99 = new(100).set_show_percent(true).update(99)
   let rendered_99 = pb_99.render()
   assert_eq(rendered_99.contains("%"), true)
 }
 
 ///| 测试闭合后打印的情况
 test "关闭后打印测试" {
-  let pb = @src.new(100).update(50).close()
+  let pb = new(100).update(50).close()
 
   // 关闭后调用print_progress应该直接返回
   pb.print_progress()

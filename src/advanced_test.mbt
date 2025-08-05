@@ -2,7 +2,7 @@
 
 ///|
 test "增量操作测试" {
-  let pb1 = @src.new(100)
+  let pb1 = new(100)
   let pb2 = pb1.increment()
   assert_eq(pb2.current, 1)
   let pb3 = pb2.increment_by(10)
@@ -11,7 +11,7 @@ test "增量操作测试" {
 
 ///|
 test "重置功能测试" {
-  let pb1 = @src.new(100).update(50)
+  let pb1 = new(100).update(50)
   assert_eq(pb1.current, 50)
   let pb2 = pb1.reset_progress()
   assert_eq(pb2.current, 0)
@@ -20,7 +20,7 @@ test "重置功能测试" {
 
 ///|
 test "关闭功能测试" {
-  let pb1 = @src.new(100)
+  let pb1 = new(100)
   let pb2 = pb1.close()
   assert_eq(pb2.closed, true)
 
@@ -31,14 +31,14 @@ test "关闭功能测试" {
 
 ///|
 test "设置总数测试" {
-  let pb1 = @src.new(100)
+  let pb1 = new(100)
   let pb2 = pb1.set_total(200)
   assert_eq(pb2.total, 200)
 }
 
 ///|
 test "完成功能测试" {
-  let pb1 = @src.new(100).update(50)
+  let pb1 = new(100).update(50)
   let pb2 = pb1.finish()
   assert_eq(pb2.current, 100)
   assert_eq(pb2.closed, true)
@@ -46,7 +46,7 @@ test "完成功能测试" {
 
 ///|
 test "自定义配置创建测试" {
-  let custom_config = @src.create_config(
+  let custom_config = create_config(
     30,
     "",
     "",
@@ -69,7 +69,7 @@ test "自定义配置创建测试" {
     false,
     0,
   )
-  let pb = @src.new_with_config(100, custom_config)
+  let pb = new_with_config(100, custom_config)
   assert_eq(pb.config.width, 30)
   assert_eq(pb.config.fill, '*')
   assert_eq(pb.config.empty, '.')
@@ -79,7 +79,7 @@ test "自定义配置创建测试" {
 
 ///|
 test "各种配置选项测试" {
-  let pb = @src.new(100)
+  let pb = new(100)
     .set_show_eta(true)
     .set_show_rate(true)
     .set_show_elapsed(true)
@@ -100,14 +100,14 @@ test "各种配置选项测试" {
 
 ///|
 test "时间间隔配置测试" {
-  let pb = @src.new(100).set_mininterval(0.5).set_miniters(5)
+  let pb = new(100).set_mininterval(0.5).set_miniters(5)
   assert_eq(pb.config.mininterval, 0.5)
   assert_eq(pb.config.miniters, 5)
 }
 
 ///|
 test "终端列数配置测试" {
-  let pb1 = @src.new(100).set_ncols(Some(80))
+  let pb1 = new(100).set_ncols(Some(80))
   assert_eq(pb1.config.ncols, Some(80))
   let pb2 = pb1.set_ncols(None)
   assert_eq(pb2.config.ncols, None)
@@ -115,7 +115,7 @@ test "终端列数配置测试" {
 
 ///|
 test "configure方法测试" {
-  let pb = @src.new(100).configure(fn(p) {
+  let pb = new(100).configure(fn(p) {
     p.set_width(25).set_prefix("进度").set_show_count(true)
   })
   assert_eq(pb.config.width, 25)

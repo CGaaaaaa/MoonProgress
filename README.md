@@ -25,7 +25,7 @@
 ```json
 {
   "import": [
-    "MoonProgress/src"
+    "CGaaaaaa/MoonProgress/src"
   ]
 }
 ```
@@ -33,7 +33,7 @@
 2. **导入使用**：在你的 MoonBit 代码中：
 ```moonbit
 // 创建进度条
-let pb = @src.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
 let result = pb.update(50).render()
 println(result)
 ```
@@ -43,14 +43,14 @@ println(result)
 #### 1. 最简单的用法
 ```moonbit
 // 创建总数为100的进度条，当前进度50
-let pb = @src.new(100).update(50)
+let pb = @CGaaaaaa/MoonProgress.new(100).update(50)
 println(pb.render())
 // 输出: 50%|[█████████████████████████                         ]
 ```
 
 #### 2. 带描述和百分比
 ```moonbit
-let pb = @src.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
   .update(75)
   .set_desc("下载文件")
   .set_show_percent(true)
@@ -60,7 +60,7 @@ println(pb.render())
 
 #### 3. 显示计数
 ```moonbit
-let pb = @src.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
   .update(30)
   .set_desc("处理")
   .set_show_count(true)
@@ -71,7 +71,7 @@ println(pb.render())
 
 #### 4. 自定义样式
 ```moonbit
-let pb = @src.new(50)
+let pb = @CGaaaaaa/MoonProgress.new(50)
   .update(30)
   .set_fill('#')          // 设置填充字符
   .set_empty('-')         // 设置空白字符
@@ -82,7 +82,7 @@ println(pb.render())
 
 #### 5. 设置宽度
 ```moonbit
-let pb = @src.new(50)
+let pb = @CGaaaaaa/MoonProgress.new(50)
   .update(30)
   .set_width(20)          // 设置进度条宽度为20
   .set_show_percent(true)
@@ -92,7 +92,7 @@ println(pb.render())
 
 #### 6. 前缀和后缀
 ```moonbit
-let pb = @src.new(50)
+let pb = @CGaaaaaa/MoonProgress.new(50)
   .update(30)
   .set_prefix("开始")     // 设置前缀
   .set_suffix("结束")     // 设置后缀
@@ -104,7 +104,7 @@ println(pb.render())
 ### 在循环中使用
 
 ```moonbit
-let pb = @src.new(100).set_desc("处理").set_show_percent(true)
+let pb = @CGaaaaaa/MoonProgress.new(100).set_desc("处理").set_show_percent(true)
 
 for i = 0; i <= 100; i = i + 10 {
   let rendered = pb.update(i).render()
@@ -131,7 +131,7 @@ for i = 0; i <= 100; i = i + 10 {
 ### 核心布尔配置
 
 ```moonbit
-let config = @MoonProgress.create_config(
+let config = @CGaaaaaa/MoonProgress.create_config(
   50,      // 宽度
   "开始",   // 前缀  
   "结束",   // 后缀
@@ -152,19 +152,19 @@ let config = @MoonProgress.create_config(
 
 ```moonbit
 // 基本创建
-let pb = @MoonProgress.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
 
 // 使用样式创建
-let pb = @MoonProgress.new_with_style(100, @MoonProgress.Block)
+let pb = @CGaaaaaa/MoonProgress.new_with_style(100, @CGaaaaaa/MoonProgress.Block)
 
 // 使用自定义配置创建
-let pb = @MoonProgress.new_with_config(100, config)
+let pb = @CGaaaaaa/MoonProgress.new_with_config(100, config)
 ```
 
 ### 链式配置
 
 ```moonbit
-let pb = @MoonProgress.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
   .set_desc("处理文件")           // 设置描述文字
   .set_unit("MB")                // 设置单位
   .set_prefix("进度")            // 设置前缀
@@ -218,7 +218,7 @@ let pb = @MoonProgress.new(100)
 
 ### 文件下载
 ```moonbit
-let pb = @MoonProgress.new_with_style(file_size, @MoonProgress.Block)
+let pb = @CGaaaaaa/MoonProgress.new_with_style(file_size, @CGaaaaaa/MoonProgress.Block)
   .set_desc("下载")
   .set_unit("MB")
   .set_show_percent(true)
@@ -233,7 +233,7 @@ for downloaded in download_chunks {
 
 ### 数据处理
 ```moonbit
-let pb = @MoonProgress.new_with_style(total_records, @MoonProgress.Arrow)
+let pb = @CGaaaaaa/MoonProgress.new_with_style(total_records, @CGaaaaaa/MoonProgress.Arrow)
   .set_desc("处理数据")
   .set_unit("records")
   .set_show_count(true)
@@ -250,7 +250,7 @@ for i in 0..total_records {
 
 ### 测试执行
 ```moonbit  
-let pb = @MoonProgress.new_with_style(test_count, @MoonProgress.Dots)
+let pb = @CGaaaaaa/MoonProgress.new_with_style(test_count, @CGaaaaaa/MoonProgress.Dots)
   .set_desc("运行测试")
   .set_prefix("测试进度")
   .set_show_percent(true)
@@ -285,7 +285,7 @@ for i in 0..1000 {
 ### 动态终端宽度适配
 
 ```moonbit
-let pb = @MoonProgress.new(100)
+let pb = @CGaaaaaa/MoonProgress.new(100)
   .set_desc("自适应进度条")
   .set_dynamic_width(true)  // 启用动态宽度
   .set_ncols(None)          // 自动检测终端宽度
@@ -301,23 +301,23 @@ println(pb.render())
 
 ```moonbit
 // 创建嵌套进度条管理器
-let manager = @MoonProgress.create_nested_manager()
+let manager = @CGaaaaaa/MoonProgress.create_nested_manager()
 
 // 主任务进度条
-let main_task = @MoonProgress.new(5)
+let main_task = @CGaaaaaa/MoonProgress.new(5)
   .set_position(0)
   .set_desc("主任务: 处理文件批次")
   .set_show_percent(true)
   .update(3)
 
 // 子任务进度条
-let sub_task1 = @MoonProgress.new(100)
+let sub_task1 = @CGaaaaaa/MoonProgress.new(100)
   .set_position(1)
   .set_desc("  └─ 处理文件1")
   .set_show_percent(true)
   .update(100)  // 已完成
 
-let sub_task2 = @MoonProgress.new(100)
+let sub_task2 = @CGaaaaaa/MoonProgress.new(100)
   .set_position(2)
   .set_desc("  └─ 处理文件2")
   .set_show_percent(true)
@@ -339,7 +339,7 @@ println(nested.render_nested())
 ### 增量操作和精确控制
 
 ```moonbit
-let mut pb = @MoonProgress.new(100)
+let mut pb = @CGaaaaaa/MoonProgress.new(100)
   .set_desc("增量处理")
   .set_show_count(true)
   .set_miniters(5)        // 最小更新间隔：5个项目

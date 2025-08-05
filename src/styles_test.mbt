@@ -2,8 +2,8 @@
 
 ///|
 test "默认样式测试" {
-  let style_config = @src.style_to_config(@src.default_style())
-  let pb = @src.new_with_style(100, @src.default_style())
+  let style_config = style_to_config(default_style())
+  let pb = new_with_style(100, default_style())
 
   // 验证默认样式配置
   assert_eq(style_config.fill, '█')
@@ -15,8 +15,8 @@ test "默认样式测试" {
 
 ///|
 test "Block样式测试" {
-  let style_config = @src.style_to_config(@src.block_style())
-  let pb = @src.new_with_style(100, @src.block_style())
+  let style_config = style_to_config(block_style())
+  let pb = new_with_style(100, block_style())
 
   // 验证Block样式配置
   assert_eq(style_config.fill, '█')
@@ -27,8 +27,8 @@ test "Block样式测试" {
 
 ///|
 test "Arrow样式测试" {
-  let style_config = @src.style_to_config(@src.arrow_style())
-  let pb = @src.new_with_style(50, @src.arrow_style())
+  let style_config = style_to_config(arrow_style())
+  let pb = new_with_style(50, arrow_style())
 
   // 验证Arrow样式配置
   assert_eq(style_config.fill, '>')
@@ -39,8 +39,8 @@ test "Arrow样式测试" {
 
 ///|
 test "Dots样式测试" {
-  let style_config = @src.style_to_config(@src.dots_style())
-  let pb = @src.new_with_style(20, @src.dots_style())
+  let style_config = style_to_config(dots_style())
+  let pb = new_with_style(20, dots_style())
 
   // 验证Dots样式配置
   assert_eq(style_config.fill, '●')
@@ -51,8 +51,8 @@ test "Dots样式测试" {
 
 ///|
 test "Hash样式测试" {
-  let style_config = @src.style_to_config(@src.hash_style())
-  let pb = @src.new_with_style(10, @src.hash_style())
+  let style_config = style_to_config(hash_style())
+  let pb = new_with_style(10, hash_style())
 
   // 验证Hash样式配置
   assert_eq(style_config.fill, '#')
@@ -63,7 +63,7 @@ test "Hash样式测试" {
 
 ///|
 test "样式进度条更新测试" {
-  let pb1 = @src.new_with_style(100, @src.block_style())
+  let pb1 = new_with_style(100, block_style())
   let pb2 = pb1.update(75)
   let percentage = pb2.percentage()
   assert_eq(percentage, 75.0)
