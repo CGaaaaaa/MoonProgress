@@ -59,19 +59,38 @@ println(pb.render())
 // 输出: 处理中: 75%|[█████████████████████████████████████▌            ] 完成
 ```
 
-#### 3. 不同样式
+#### 3. 功能配置展示
 ```moonbit
-// 样式1: 经典块状
-let pb1 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Classic).update(60)
-println(pb1.render()) // 60%|[██████████████████████████████                    ]
+// 显示百分比 + 计数
+let pb1 = @CGaaaaaa/MoonProgress.new(100).set_show_percent(true).set_show_count(true).update(45)
+println(pb1.render()) 
+// 输出: 45% (45/100)|[██████████████████████▌                           ]
 
-// 样式2: 现代圆形
-let pb2 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Modern).update(60)  
-println(pb2.render()) // 60%|[●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●                    ]
+// 显示ETA + 处理速率
+let pb2 = @CGaaaaaa/MoonProgress.new(1000).set_show_eta(true).set_show_rate(true).update(350)
+println(pb2.render())
+// 输出: 35%|[█████████████████▌                                ] ETA: 2m15s 150.5/s
 
-// 样式3: 极简风格
-let pb3 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Minimal).update(60)
-println(pb3.render()) // 60%|[==============================                    ]
+// 显示已用时间 + 自定义单位
+let pb3 = @CGaaaaaa/MoonProgress.new(500).set_show_elapsed(true).set_unit("MB").update(200)
+println(pb3.render())
+// 输出: 40%|[████████████████████                             ] 200MB 已用时间: 1m30s
+
+// 动态宽度适配终端
+let pb4 = @CGaaaaaa/MoonProgress.new(100).set_dynamic_width(true).update(75)
+println(pb4.render())
+// 输出: 75%|[████████████████████████████████████████████████████████████▌     ] (自动适配终端宽度)
+
+// 完整信息显示
+let pb5 = @CGaaaaaa/MoonProgress.new(2000)
+  .set_show_percent(true)
+  .set_show_count(true)
+  .set_show_eta(true)
+  .set_show_rate(true)
+  .set_unit("条/秒")
+  .update(800)
+println(pb5.render())
+// 输出: 40% (800/2000)|[████████████████████                             ] ETA: 4m20s 92.3条/秒
 ```
 
 #### 4. 实时更新
@@ -148,6 +167,73 @@ process_files(50)
 - **Minimal**: `=` 填充，`-` 空白 - 简洁极简设计
 - **ASCII**: `#` 填充，`.` 空白 - 纯ASCII兼容
 - **Dots**: `•` 填充，`·` 空白 - 优雅点状图案
+
+## 🔧 功能对比展示
+
+### 基础显示 vs 完整功能
+```moonbit
+// 基础显示（默认配置）
+let basic = @CGaaaaaa/MoonProgress.new(100).update(60)
+println(basic.render())
+// 输出: 60%|[██████████████████████████████                    ]
+
+// 启用计数显示
+let with_count = @CGaaaaaa/MoonProgress.new(100).set_show_count(true).update(60)
+println(with_count.render())  
+// 输出: 60% (60/100)|[██████████████████████████████                    ]
+
+// 启用速率和ETA
+let with_stats = @CGaaaaaa/MoonProgress.new(100)
+  .set_show_rate(true)
+  .set_show_eta(true)
+  .update(60)
+println(with_stats.render())
+// 输出: 60%|[██████████████████████████████                    ] ETA: 45s 2.3/s
+
+// 完整功能展示
+let full_featured = @CGaaaaaa/MoonProgress.new(100)
+  .set_prefix("处理: ")
+  .set_suffix(" 完成")
+  .set_show_count(true)
+  .set_show_rate(true) 
+  .set_show_eta(true)
+  .set_unit("项")
+  .update(60)
+println(full_featured.render())
+// 输出: 处理: 60% (60/100)|[██████████████████████████████                    ] ETA: 45s 2.3项/s 完成
+```
+
+### 不同场景的最佳配置
+```moonbit
+// 文件下载场景
+let download = @CGaaaaaa/MoonProgress.new(1024)
+  .set_prefix("下载: ")
+  .set_show_rate(true)
+  .set_show_eta(true)
+  .set_unit("MB/s")
+  .update(512)
+println(download.render())
+// 输出: 下载: 50%|[█████████████████████████                         ] ETA: 2m30s 8.5MB/s
+
+// 数据处理场景  
+let processing = @CGaaaaaa/MoonProgress.new(10000)
+  .set_prefix("分析: ")
+  .set_show_count(true)
+  .set_show_rate(true)
+  .set_unit("条/秒")
+  .update(4500)
+println(processing.render())
+// 输出: 分析: 45% (4500/10000)|[██████████████████████▌                       ] 125.6条/秒
+
+// 长时间任务场景
+let long_task = @CGaaaaaa/MoonProgress.new(500)
+  .set_show_elapsed(true)
+  .set_show_eta(true)
+  .set_smooth(true)
+  .update(200)
+println(long_task.render())
+// 输出: 40%|[████████████████████                             ] 已用时间: 15m30s ETA: 23m15s
+```
 
 ## 🎨 高级示例
 

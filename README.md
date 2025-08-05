@@ -60,19 +60,38 @@ println(pb.render())
 // Output: Processing: 75%|[█████████████████████████████████████▌            ] Complete
 ```
 
-#### 3. Different Styles
+#### 3. Feature Configuration Showcase
 ```moonbit
-// Style 1: Classic blocks
-let pb1 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Classic).update(60)
-println(pb1.render()) // 60%|[██████████████████████████████                    ]
+// Show percentage + count
+let pb1 = @CGaaaaaa/MoonProgress.new(100).set_show_percent(true).set_show_count(true).update(45)
+println(pb1.render()) 
+// Output: 45% (45/100)|[██████████████████████▌                           ]
 
-// Style 2: Modern rounded
-let pb2 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Modern).update(60)  
-println(pb2.render()) // 60%|[●●●●●●●●●●●●●●●●●●●●●●●●●●●●●●                    ]
+// Show ETA + processing rate
+let pb2 = @CGaaaaaa/MoonProgress.new(1000).set_show_eta(true).set_show_rate(true).update(350)
+println(pb2.render())
+// Output: 35%|[█████████████████▌                                ] ETA: 2m15s 150.5/s
 
-// Style 3: Minimalist
-let pb3 = @CGaaaaaa/MoonProgress.new(100).set_style(@CGaaaaaa/MoonProgress.Minimal).update(60)
-println(pb3.render()) // 60%|[==============================                    ]
+// Show elapsed time + custom unit
+let pb3 = @CGaaaaaa/MoonProgress.new(500).set_show_elapsed(true).set_unit("MB").update(200)
+println(pb3.render())
+// Output: 40%|[████████████████████                             ] 200MB Elapsed: 1m30s
+
+// Dynamic width adaptation
+let pb4 = @CGaaaaaa/MoonProgress.new(100).set_dynamic_width(true).update(75)
+println(pb4.render())
+// Output: 75%|[████████████████████████████████████████████████████████████▌     ] (auto-adapts to terminal width)
+
+// Full feature display
+let pb5 = @CGaaaaaa/MoonProgress.new(2000)
+  .set_show_percent(true)
+  .set_show_count(true)
+  .set_show_eta(true)
+  .set_show_rate(true)
+  .set_unit("items/s")
+  .update(800)
+println(pb5.render())
+// Output: 40% (800/2000)|[████████████████████                             ] ETA: 4m20s 92.3items/s
 ```
 
 #### 4. Real-time Updates
@@ -149,6 +168,73 @@ Render the progress bar as a string.
 - **Minimal**: `=` filled, `-` empty - Clean minimalist design
 - **ASCII**: `#` filled, `.` empty - Pure ASCII compatibility
 - **Dots**: `•` filled, `·` empty - Elegant dot pattern
+
+## 🔧 Feature Comparison Showcase
+
+### Basic Display vs Full Features
+```moonbit
+// Basic display (default configuration)
+let basic = @CGaaaaaa/MoonProgress.new(100).update(60)
+println(basic.render())
+// Output: 60%|[██████████████████████████████                    ]
+
+// Enable count display
+let with_count = @CGaaaaaa/MoonProgress.new(100).set_show_count(true).update(60)
+println(with_count.render())  
+// Output: 60% (60/100)|[██████████████████████████████                    ]
+
+// Enable rate and ETA
+let with_stats = @CGaaaaaa/MoonProgress.new(100)
+  .set_show_rate(true)
+  .set_show_eta(true)
+  .update(60)
+println(with_stats.render())
+// Output: 60%|[██████████████████████████████                    ] ETA: 45s 2.3/s
+
+// Full feature showcase
+let full_featured = @CGaaaaaa/MoonProgress.new(100)
+  .set_prefix("Processing: ")
+  .set_suffix(" Complete")
+  .set_show_count(true)
+  .set_show_rate(true) 
+  .set_show_eta(true)
+  .set_unit("items")
+  .update(60)
+println(full_featured.render())
+// Output: Processing: 60% (60/100)|[██████████████████████████████                    ] ETA: 45s 2.3items/s Complete
+```
+
+### Optimal Configurations for Different Scenarios
+```moonbit
+// File download scenario
+let download = @CGaaaaaa/MoonProgress.new(1024)
+  .set_prefix("Download: ")
+  .set_show_rate(true)
+  .set_show_eta(true)
+  .set_unit("MB/s")
+  .update(512)
+println(download.render())
+// Output: Download: 50%|[█████████████████████████                         ] ETA: 2m30s 8.5MB/s
+
+// Data processing scenario
+let processing = @CGaaaaaa/MoonProgress.new(10000)
+  .set_prefix("Analyzing: ")
+  .set_show_count(true)
+  .set_show_rate(true)
+  .set_unit("items/s")
+  .update(4500)
+println(processing.render())
+// Output: Analyzing: 45% (4500/10000)|[██████████████████████▌                       ] 125.6items/s
+
+// Long-running task scenario
+let long_task = @CGaaaaaa/MoonProgress.new(500)
+  .set_show_elapsed(true)
+  .set_show_eta(true)
+  .set_smooth(true)
+  .update(200)
+println(long_task.render())
+// Output: 40%|[████████████████████                             ] Elapsed: 15m30s ETA: 23m15s
+```
 
 ## 🎨 Advanced Examples
 
@@ -312,5 +398,3 @@ Inspired by excellent progress bar libraries:
 - Go's [progressbar](https://github.com/schollz/progressbar)
 
 ---
-
-Made with ❤️ for the MoonBit community
