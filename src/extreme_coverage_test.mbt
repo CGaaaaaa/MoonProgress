@@ -69,10 +69,7 @@ test "format_time所有分支极限测试" {
 
 ///| 测试format_rate的1000000.0分支
 test "format_rate百万级分支测试" {
-  let pb = new(10000000)
-    .set_show_rate(true)
-    .set_unit_scale(true)
-    .set_unit("B")
+  let pb = new(10000000).set_show_rate(true).set_unit_scale(true).set_unit("B")
 
   // 大量更新来触发百万级速率
   let mut pb_big = pb

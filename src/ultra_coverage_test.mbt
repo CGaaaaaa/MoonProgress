@@ -43,10 +43,7 @@ test "强制触发format_rate所有分支" {
   assert_eq(rendered_small.length() > 0, true)
 
   // 测试千级数值(1000-999999)
-  let pb_k = new(100000)
-    .set_show_rate(true)
-    .set_unit_scale(true)
-    .set_unit("KB")
+  let pb_k = new(100000).set_show_rate(true).set_unit_scale(true).set_unit("KB")
   let mut pb_k_updated = pb_k
   for i = 1; i <= 100; i = i + 1 {
     pb_k_updated = pb_k_updated.update(i * 1000)
@@ -140,10 +137,7 @@ test "render条件分支完整测试" {
   assert_eq(rendered_minimal.length() > 0, true)
 
   // 测试动态宽度的false分支
-  let pb_static = new(100)
-    .set_dynamic_width(false)
-    .set_width(30)
-    .update(50)
+  let pb_static = new(100).set_dynamic_width(false).set_width(30).update(50)
   let rendered_static = pb_static.render()
   assert_eq(rendered_static.length() > 0, true)
 }
