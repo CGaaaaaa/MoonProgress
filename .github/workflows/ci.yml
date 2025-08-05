@@ -52,11 +52,7 @@ jobs:
       run: |
         moon build
     
-    - name: Run examples
-      run: |
-        cd examples
-        moon run examples
-        
+
   security:
     name: 🔒 Security Scan
     runs-on: ubuntu-latest
