@@ -28,7 +28,27 @@ pub struct ProgressConfig {
   position : Int // 嵌套进度条位置
 }
 
-///| 默认配置
+/// 创建默认配置
+/// 
+/// 返回包含所有默认设置的 ProgressConfig 实例。
+/// 
+/// # 返回值
+/// - `ProgressConfig` - 默认配置对象
+/// 
+/// # 默认配置
+/// - 宽度: 50 字符
+/// - 填充字符: '█' (实心块)
+/// - 空白字符: ' ' (空格)
+/// - 显示百分比: true
+/// - 显示ETA: true
+/// - 显示速率: true
+/// - 其他选项: false
+/// 
+/// # 示例
+/// ```moonbit
+/// let config = default_config()
+/// let pb = new_with_config(100, config)
+/// ```
 pub fn default_config() -> ProgressConfig {
   {
     width: 50,
@@ -55,7 +75,49 @@ pub fn default_config() -> ProgressConfig {
   }
 }
 
-///| 创建自定义配置的工厂函数
+/// 创建自定义配置的工厂函数
+/// 
+/// 使用指定的参数创建完全自定义的 ProgressConfig。
+/// 
+/// # 参数
+/// - `width` - 进度条宽度（字符数）
+/// - `prefix` - 进度条前的文本
+/// - `suffix` - 进度条后的文本
+/// - `fill` - 已完成部分的填充字符
+/// - `empty` - 未完成部分的空白字符
+/// - `show_percent` - 是否显示百分比
+/// - `show_count` - 是否显示当前/总数计数
+/// - `show_eta` - 是否显示预计剩余时间
+/// - `show_rate` - 是否显示处理速率
+/// - `show_elapsed` - 是否显示已用时间
+/// - `dynamic_width` - 是否动态适应终端宽度
+/// - `smooth` - 是否启用平滑更新
+/// - `leave` - 完成后是否保留进度条
+/// - `ncols` - 终端列数（None表示自动检测）
+/// - `miniters` - 最小更新间隔（项目数）
+/// - `mininterval` - 最小时间间隔（秒）
+/// - `maxinterval` - 最大时间间隔（秒）
+/// - `desc` - 描述文本
+/// - `unit` - 单位名称
+/// - `unit_scale` - 是否自动缩放单位
+/// - `position` - 嵌套进度条位置
+/// 
+/// # 返回值
+/// - `ProgressConfig` - 自定义配置对象
+/// 
+/// # 示例
+/// ```moonbit
+/// let config = create_config(
+///   30, "下载:", "完成",
+///   '>', '-', true,
+///   true, true, true,
+///   false, false,
+///   true, true, None,
+///   1, 0.1, 10.0,
+///   "文件下载", "MB", true, 0
+/// )
+/// let pb = new_with_config(1024, config)
+/// ```
 pub fn create_config(
   width : Int,
   prefix : String,
@@ -182,7 +244,32 @@ fn init_stats() -> ProgressStats {
   { avg_time: 0.0, avg_rate: 0.0, smoothed_rate: 0.0, eta: 0.0, elapsed: 0.0 }
 }
 
-///| 创建新的进度条
+/// 创建新的进度条
+/// 
+/// 使用默认配置创建一个新的进度条实例。
+/// 
+/// # 参数
+/// - `total` - 进度条的总数，表示任务的完整数量
+/// 
+/// # 返回值
+/// - `ProgressBar` - 新创建的进度条实例
+/// 
+/// # 示例
+/// ```moonbit
+/// // 创建总数为100的进度条
+/// let pb = new(100)
+/// let result = pb.update(50).render()
+/// println(result)
+/// // 输出: 50%|[█████████████████████████                         ]
+/// 
+/// // 链式调用配置
+/// let pb2 = new(200)
+///   .set_prefix("处理中: ")
+///   .set_show_count(true)
+///   .update(75)
+/// println(pb2.render())
+/// // 输出: 处理中: 37% (75/200)|[██████████████████▌                           ]
+/// ```
 pub fn new(total : Int) -> ProgressBar {
   {
     config: default_config(),
@@ -196,7 +283,36 @@ pub fn new(total : Int) -> ProgressBar {
   }
 }
 
-///| 使用自定义配置创建进度条
+/// 使用自定义配置创建进度条
+/// 
+/// 使用指定的配置创建进度条实例，允许完全自定义外观和行为。
+/// 
+/// # 参数
+/// - `total` - 进度条的总数，表示任务的完整数量
+/// - `config` - 自定义配置对象，包含所有显示和行为选项
+/// 
+/// # 返回值
+/// - `ProgressBar` - 使用自定义配置的进度条实例
+/// 
+/// # 示例
+/// ```moonbit
+/// // 创建自定义配置
+/// let custom_config = create_config(
+///   30, "下载: ", "",
+///   '>', '-', true,
+///   true, true, true,
+///   false, false,
+///   true, true, None,
+///   1, 0.1, 10.0,
+///   "", "it", false, 0
+/// )
+/// 
+/// // 使用自定义配置创建进度条
+/// let pb = new_with_config(1024, custom_config)
+/// let result = pb.update(512).render()
+/// println(result)
+/// // 输出: 下载: 50% (512/1024)|[>>>>>>>>>>>>>>>--------------]
+/// ```
 pub fn new_with_config(total : Int, config : ProgressConfig) -> ProgressBar {
   {
     config,
@@ -269,7 +385,48 @@ fn compute_stats(self : ProgressBar, new_current : Int) -> ProgressStats {
   }
 }
 
-///| 更新进度（高级版本）
+/// 更新进度条的当前进度值
+/// 
+/// 更新进度条的当前值，自动计算统计信息（速率、ETA等），并返回更新后的进度条实例。
+/// 支持链式调用。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `new_current` - 新的当前进度值，会被限制在0到total之间
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新后的进度条实例，支持链式调用
+/// 
+/// # 行为
+/// - 自动限制进度值在有效范围内（0 <= current <= total）
+/// - 智能更新频率控制（基于miniters和mininterval配置）
+/// - 自动计算平均速率、瞬时速率和ETA
+/// - 维护时间样本点用于精确的速率计算
+/// 
+/// # 示例
+/// ```moonbit
+/// // 基本使用
+/// let pb = new(100)
+/// let updated_pb = pb.update(50)
+/// println(updated_pb.render())
+/// // 输出: 50%|[█████████████████████████                         ]
+/// 
+/// // 链式调用
+/// let pb2 = new(200)
+///   .set_prefix("处理: ")
+///   .set_show_count(true)
+///   .update(75)
+///   .update(100) // 继续更新
+/// println(pb2.render())
+/// // 输出: 处理: 50% (100/200)|[█████████████████████████                     ]
+/// 
+/// // 循环中使用
+/// let mut pb3 = new(1000).set_show_rate(true)
+/// for i = 0; i <= 1000; i = i + 10 {
+///   pb3 = pb3.update(i)
+///   println(pb3.render())
+/// }
+/// ```
 pub fn update(self : ProgressBar, new_current : Int) -> ProgressBar {
   if self.closed {
     return self
@@ -311,7 +468,36 @@ pub fn update(self : ProgressBar, new_current : Int) -> ProgressBar {
   }
 }
 
-///| 增加进度
+/// 增加进度（递增1）
+/// 
+/// 将当前进度值增加1，等同于 update(current + 1)。
+/// 适用于逐项处理的循环场景。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新后的进度条实例，支持链式调用
+/// 
+/// # 示例
+/// ```moonbit
+/// // 在循环中逐项递增
+/// let mut pb = new(10).set_prefix("处理项目: ")
+/// for i = 0; i < 10; i = i + 1 {
+///   // 处理某个项目...
+///   pb = pb.increment()
+///   println(pb.render())
+/// }
+/// // 输出类似: 处理项目: 100%|[██████████████████████████████████████████████████]
+/// 
+/// // 链式调用
+/// let pb2 = new(5)
+///   .increment()  // 1/5
+///   .increment()  // 2/5
+///   .increment()  // 3/5
+/// println(pb2.render())
+/// // 输出: 60%|[██████████████████████████████                    ]
+/// ```
 pub fn increment(self : ProgressBar) -> ProgressBar {
   self.update(self.current + 1)
 }
@@ -441,7 +627,52 @@ fn get_dynamic_width(self : ProgressBar) -> Int {
   }
 }
 
-///| 渲染进度条为字符串（高级版本）
+/// 将进度条渲染为字符串
+/// 
+/// 根据当前配置和进度状态，生成进度条的字符串表示。这是显示进度条的核心方法。
+/// 
+/// # 参数
+/// - `self` - 要渲染的进度条实例
+/// 
+/// # 返回值
+/// - `String` - 格式化的进度条字符串，可直接用于打印
+/// 
+/// # 渲染元素
+/// 根据配置，渲染结果可能包含：
+/// - 描述文本（desc）
+/// - 前缀文本（prefix）
+/// - 百分比（show_percent）
+/// - 进度条主体（填充字符 + 空白字符）
+/// - 计数信息（show_count）：当前/总数
+/// - 处理速率（show_rate）：项目/秒
+/// - 预计剩余时间（show_eta）：ETA: Xm Ys
+/// - 已用时间（show_elapsed）
+/// - 后缀文本（suffix）
+/// 
+/// # 示例
+/// ```moonbit
+/// // 基本渲染
+/// let pb1 = new(100).update(50)
+/// println(pb1.render())
+/// // 输出: 50%|[█████████████████████████                         ]
+/// 
+/// // 带计数的渲染
+/// let pb2 = new(200).set_show_count(true).update(75)
+/// println(pb2.render())
+/// // 输出: 37% (75/200)|[██████████████████▌                           ]
+/// 
+/// // 完整功能渲染
+/// let pb3 = new(1000)
+///   .set_prefix("下载: ")
+///   .set_suffix(" 完成")
+///   .set_show_count(true)
+///   .set_show_rate(true)
+///   .set_show_eta(true)
+///   .set_unit("MB")
+///   .update(400)
+/// println(pb3.render())
+/// // 输出: 下载: 40% (400/1000)|[████████████████████                         ] [125.5MB/s] ETA: 4m30s 完成
+/// ```
 pub fn render(self : ProgressBar) -> String {
   let percentage = self.percentage()
   let bar_width = if self.config.dynamic_width {
@@ -553,7 +784,51 @@ pub fn print_with_update(self : ProgressBar) -> ProgressBar {
   result
 }
 
-///| 完成进度条
+/// 完成进度条
+/// 
+/// 将进度条设置为完成状态（current = total），打印最终结果，并根据配置决定是否保留显示。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// 
+/// # 返回值
+/// - `ProgressBar` - 已完成并关闭的进度条实例
+/// 
+/// # 行为
+/// 1. 自动将进度设置为100%（current = total）
+/// 2. 打印最终的进度条状态
+/// 3. 根据leave配置决定是否保留显示
+/// 4. 关闭进度条，防止后续更新
+/// 
+/// # 示例
+/// ```moonbit
+/// // 基本完成操作
+/// let pb1 = new(100)
+///   .set_prefix("下载: ")
+///   .update(95)  // 进行到95%
+/// let completed = pb1.finish()  // 自动完成到100%
+/// // 输出: 下载: 100%|[██████████████████████████████████████████████████]
+/// 
+/// // 设置不保留完成状态
+/// let pb2 = new(50)
+///   .set_leave(false)
+///   .set_prefix("临时任务: ")
+///   .update(30)
+/// let completed2 = pb2.finish()  // 完成后清除显示
+/// 
+/// // 批处理场景
+/// fn process_batch(items: Array[String]) {
+///   let mut pb = new(items.length())
+///     .set_prefix("批处理: ")
+///     .set_show_count(true)
+///   
+///   for i = 0; i < items.length(); i = i + 1 {
+///     // 处理项目...
+///     pb = pb.update(i + 1)
+///   }
+///   pb.finish()  // 确保显示100%完成
+/// }
+/// ```
 pub fn finish(self : ProgressBar) -> ProgressBar {
   let final_pb = self.update(self.total)
   final_pb.print_progress()
@@ -568,12 +843,71 @@ pub fn finish(self : ProgressBar) -> ProgressBar {
   final_pb.close()
 }
 
-///| 设置进度条宽度
+/// 设置进度条宽度
+/// 
+/// 设置进度条主体部分的字符宽度。不影响前缀、后缀等其他元素。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `width` - 新的宽度值（字符数），建议范围：10-100
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新配置后的进度条实例，支持链式调用
+/// 
+/// # 示例
+/// ```moonbit
+/// // 设置较窄的进度条
+/// let pb1 = new(100).set_width(20).update(50)
+/// println(pb1.render())
+/// // 输出: 50%|[██████████          ]
+/// 
+/// // 设置较宽的进度条
+/// let pb2 = new(100).set_width(80).update(25)
+/// println(pb2.render())
+/// // 输出: 25%|[████████████████████                                                            ]
+/// 
+/// // 链式配置
+/// let pb3 = new(200)
+///   .set_width(30)
+///   .set_prefix("加载: ")
+///   .update(100)
+/// println(pb3.render())
+/// // 输出: 加载: 50%|[███████████████               ]
+/// ```
 pub fn set_width(self : ProgressBar, width : Int) -> ProgressBar {
   { ..self, config: { ..self.config, width, } }
 }
 
-///| 设置前缀文本
+/// 设置前缀文本
+/// 
+/// 在进度条前面添加描述性文本，用于说明当前正在执行的任务。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `prefix` - 前缀文本，会自动在后面添加一个空格
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新配置后的进度条实例，支持链式调用
+/// 
+/// # 示例
+/// ```moonbit
+/// // 基本前缀使用
+/// let pb1 = new(100).set_prefix("下载文件:").update(30)
+/// println(pb1.render())
+/// // 输出: 下载文件: 30%|[███████████████                                   ]
+/// 
+/// // 不同场景的前缀
+/// let pb2 = new(1000).set_prefix("处理数据:").set_show_count(true).update(250)
+/// println(pb2.render())
+/// // 输出: 处理数据: 25% (250/1000)|[████████████▌                                 ]
+/// 
+/// // 动态更新前缀（通过重新配置）
+/// let pb3 = new(50)
+/// let pb3_downloading = pb3.set_prefix("正在下载:").update(20)
+/// let pb3_processing = pb3_downloading.set_prefix("正在处理:").update(30)
+/// println(pb3_processing.render())
+/// // 输出: 正在处理: 60%|[██████████████████████████████                    ]
+/// ```
 pub fn set_prefix(self : ProgressBar, prefix : String) -> ProgressBar {
   { ..self, config: { ..self.config, prefix, } }
 }
@@ -593,12 +927,74 @@ pub fn set_empty(self : ProgressBar, empty : Char) -> ProgressBar {
   { ..self, config: { ..self.config, empty, } }
 }
 
-///| 设置是否显示百分比
+/// 设置是否显示百分比
+/// 
+/// 控制是否在进度条前显示完成百分比。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `show` - true显示百分比，false隐藏百分比
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新配置后的进度条实例，支持链式调用
+/// 
+/// # 示例
+/// ```moonbit
+/// // 显示百分比（默认行为）
+/// let pb1 = new(100).set_show_percent(true).update(30)
+/// println(pb1.render())
+/// // 输出: 30%|[███████████████                                   ]
+/// 
+/// // 隐藏百分比
+/// let pb2 = new(100).set_show_percent(false).update(30)
+/// println(pb2.render())
+/// // 输出: [███████████████                                   ]
+/// 
+/// // 结合其他显示选项
+/// let pb3 = new(200)
+///   .set_show_percent(false)
+///   .set_show_count(true)
+///   .set_prefix("处理: ")
+///   .update(80)
+/// println(pb3.render())
+/// // 输出: 处理: (80/200)|[████████████████████                             ]
+/// ```
 pub fn set_show_percent(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_percent: show } }
 }
 
-///| 设置是否显示计数
+/// 设置是否显示计数
+/// 
+/// 控制是否显示当前值/总值的计数信息。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `show` - true显示计数，false隐藏计数
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新配置后的进度条实例，支持链式调用
+/// 
+/// # 示例
+/// ```moonbit
+/// // 显示计数
+/// let pb1 = new(500).set_show_count(true).update(125)
+/// println(pb1.render())
+/// // 输出: 25% (125/500)|[████████████▌                                     ]
+/// 
+/// // 隐藏计数（默认行为）
+/// let pb2 = new(500).set_show_count(false).update(125)
+/// println(pb2.render())
+/// // 输出: 25%|[████████████▌                                     ]
+/// 
+/// // 在文件下载场景中显示计数
+/// let pb3 = new(1024)
+///   .set_prefix("下载: ")
+///   .set_show_count(true)
+///   .set_unit("MB")
+///   .update(256)
+/// println(pb3.render())
+/// // 输出: 下载: 25% (256/1024)|[████████████▌                                 ] [45.2MB/s]
+/// ```
 pub fn set_show_count(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_count: show } }
 }
@@ -633,7 +1029,43 @@ pub fn set_smooth(self : ProgressBar, smooth : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, smooth, } }
 }
 
-///| 设置动态宽度
+/// 设置动态宽度
+/// 
+/// 控制是否根据终端宽度自动调整进度条宽度。
+/// 启用后，进度条会自动适应不同大小的终端窗口。
+/// 
+/// # 参数
+/// - `self` - 当前的进度条实例
+/// - `dynamic` - true启用动态宽度，false使用固定宽度
+/// 
+/// # 返回值
+/// - `ProgressBar` - 更新配置后的进度条实例，支持链式调用
+/// 
+/// # 行为
+/// - 启用时：自动检测终端宽度，动态调整进度条长度
+/// - 禁用时：使用config.width指定的固定宽度
+/// 
+/// # 示例
+/// ```moonbit
+/// // 使用固定宽度（默认50字符）
+/// let pb1 = new(100).set_dynamic_width(false).update(50)
+/// println(pb1.render())
+/// // 输出: 50%|[█████████████████████████                         ]
+/// 
+/// // 启用动态宽度（根据终端自动调整）
+/// let pb2 = new(100).set_dynamic_width(true).update(50)
+/// println(pb2.render())
+/// // 输出: 50%|[████████████████████████████████████████████████████████████▌     ] (宽度根据终端调整)
+/// 
+/// // 适合响应式布局的场景
+/// let pb3 = new(1000)
+///   .set_prefix("分析: ")
+///   .set_dynamic_width(true)
+///   .set_show_count(true)
+///   .update(350)
+/// println(pb3.render())
+/// // 输出会根据终端宽度自动调整进度条长度
+/// ```
 pub fn set_dynamic_width(self : ProgressBar, dynamic : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, dynamic_width: dynamic } }
 }
