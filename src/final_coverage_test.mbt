@@ -1,6 +1,7 @@
 // 最终覆盖率提升测试 - 针对剩余未覆盖的代码路径
 
-///| 特殊函数测试 - 覆盖特定的format_time分支
+///|
+/// 特殊函数测试 - 覆盖特定的format_time分支
 fn simulate_long_time() -> ProgressBar {
   // 创建一个进度条并尝试触发较长时间的计算
   let pb = new(3600)
@@ -16,7 +17,8 @@ fn simulate_long_time() -> ProgressBar {
   result
 }
 
-///| 测试format_time函数的小时显示分支
+///|
+/// 测试format_time函数的小时显示分支
 test "format_time小时分支深度测试" {
   let pb = simulate_long_time()
   let rendered = pb.render()
@@ -27,7 +29,8 @@ test "format_time小时分支深度测试" {
   assert_eq(finished_pb.closed, true)
 }
 
-///| 测试format_time的分钟秒数补零逻辑
+///|
+/// 测试format_time的分钟秒数补零逻辑
 test "format_time补零逻辑测试" {
   // 创建一个可能触发补零逻辑的进度条
   let pb = new(600).set_show_elapsed(true).set_show_eta(true)
@@ -40,7 +43,8 @@ test "format_time补零逻辑测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试format_rate的unit_scale=false分支
+///|
+/// 测试format_rate的unit_scale=false分支
 test "format_rate非缩放分支测试" {
   let pb = new(1000)
     .set_show_rate(true)
@@ -55,7 +59,8 @@ test "format_rate非缩放分支测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试format_rate的各种数值范围
+///|
+/// 测试format_rate的各种数值范围
 test "format_rate数值范围测试" {
   // 测试小数值（< 1000）
   let pb_small = new(100)
@@ -76,7 +81,8 @@ test "format_rate数值范围测试" {
   assert_eq(rendered_medium.length() > 0, true)
 }
 
-///| 测试所有compute_stats分支
+///|
+/// 测试所有compute_stats分支
 test "compute_stats分支测试" {
   // 测试delta_t = 0的情况
   let pb = new(100)
@@ -93,7 +99,8 @@ test "compute_stats分支测试" {
   assert_eq(pb_partial.current, 100)
 }
 
-///| 测试get_dynamic_width的边界计算
+///|
+/// 测试get_dynamic_width的边界计算
 test "动态宽度边界计算测试" {
   // 测试所有width计算都为0的情况
   let pb_empty = new(100)
@@ -128,7 +135,8 @@ test "动态宽度边界计算测试" {
   assert_eq(rendered_narrow.length() > 0, true)
 }
 
-///| 测试update函数的miniters和mininterval组合
+///|
+/// 测试update函数的miniters和mininterval组合
 test "update函数条件分支测试" {
   // 测试delta_n < miniters && delta_t < mininterval的情况
   let pb = new(1000).set_miniters(100).set_mininterval(1.0)
@@ -143,7 +151,8 @@ test "update函数条件分支测试" {
   assert_eq(pb3.current, 200)
 }
 
-///| 测试samples数组的remove逻辑
+///|
+/// 测试samples数组的remove逻辑
 test "samples数组管理测试" {
   let mut pb = new(100)
 
@@ -155,7 +164,8 @@ test "samples数组管理测试" {
   assert_eq(pb.percentage(), 60.0)
 }
 
-///| 测试render函数的所有条件分支
+///|
+/// 测试render函数的所有条件分支
 test "render函数条件分支详细测试" {
   // 测试desc.length() > 0的情况
   let pb_with_desc = new(100).set_desc("任务描述").update(30)
@@ -173,7 +183,8 @@ test "render函数条件分支详细测试" {
   assert_eq(rendered_with_suffix.contains("后缀"), true)
 }
 
-///| 测试render中的速率和ETA显示条件
+///|
+/// 测试render中的速率和ETA显示条件
 test "render速率ETA条件测试" {
   // 测试show_rate && avg_rate > 0.0的情况
   let pb_with_rate = new(100).set_show_rate(true)
@@ -191,7 +202,8 @@ test "render速率ETA条件测试" {
   assert_eq(rendered_eta.length() > 0, true)
 }
 
-///| 测试print_progress的条件分支
+///|
+/// 测试print_progress的条件分支
 test "print_progress条件分支测试" {
   // 测试关闭状态下的print_progress
   let pb_closed = new(100).update(50).close()
@@ -206,7 +218,8 @@ test "print_progress条件分支测试" {
   assert_eq(pb_interval.current, 30)
 }
 
-///| 测试所有set方法的边界情况
+///|
+/// 测试所有set方法的边界情况
 test "set方法边界测试" {
   let pb = new(100)
     .set_width(0) // 边界值
@@ -223,7 +236,8 @@ test "set方法边界测试" {
   assert_eq(pb.current, 50)
 }
 
-///| 测试NestedProgressManager的边界情况
+///|
+/// 测试NestedProgressManager的边界情况
 test "嵌套进度条管理器边界测试" {
   let manager = create_nested_manager()
 
@@ -249,7 +263,8 @@ test "嵌套进度条管理器边界测试" {
   assert_eq(updated_manager.max_position, 2)
 }
 
-///| 测试configure函数的使用
+///|
+/// 测试configure函数的使用
 test "configure函数测试" {
   let pb = new(100)
     .configure(fn(p) {
@@ -263,7 +278,8 @@ test "configure函数测试" {
   assert_eq(rendered.contains("配置"), true)
 }
 
-///| 测试percentage函数的边界情况
+///|
+/// 测试percentage函数的边界情况
 test "percentage边界测试" {
   // 测试total <= 0的情况
   let pb_zero_total = new(0)

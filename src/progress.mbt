@@ -3,7 +3,8 @@
 // 核心进度条结构和API定义
 // 参考 tqdm, progressbar.js, go-progressbar 的最佳实践
 
-///| 进度条配置选项
+///|
+/// 进度条配置选项
 pub struct ProgressConfig {
   width : Int // 进度条宽度
   prefix : String // 前缀文本
@@ -28,6 +29,7 @@ pub struct ProgressConfig {
   position : Int // 嵌套进度条位置
 }
 
+///|
 /// 创建默认配置
 /// 
 /// 返回包含所有默认设置的 ProgressConfig 实例。
@@ -75,6 +77,7 @@ pub fn default_config() -> ProgressConfig {
   }
 }
 
+///|
 /// 创建自定义配置的工厂函数
 /// 
 /// 使用指定的参数创建完全自定义的 ProgressConfig。
@@ -166,7 +169,8 @@ pub fn create_config(
   }
 }
 
-///| 时间工具类型
+///|
+/// 时间工具类型
 pub struct TimeInfo {
   start_time : Double // 开始时间（秒）
   last_update : Double // 上次更新时间
@@ -175,7 +179,8 @@ pub struct TimeInfo {
   samples : Array[(Double, Int)] // 时间和进度样本点，用于精确计算速率
 }
 
-///| 进度统计信息
+///|
+/// 进度统计信息
 pub struct ProgressStats {
   avg_time : Double // 平均时间
   avg_rate : Double // 平均速率
@@ -184,7 +189,8 @@ pub struct ProgressStats {
   elapsed : Double // 已用时间
 }
 
-///| 进度条状态
+///|
+/// 进度条状态
 pub struct ProgressBar {
   config : ProgressConfig
   total : Int
@@ -196,16 +202,19 @@ pub struct ProgressBar {
   closed : Bool // 是否已关闭
 }
 
-///| 时间跟踪结构 - 封装时间状态
+///|
+/// 时间跟踪结构 - 封装时间状态
 pub struct TimeTracker {
   counter : Double
   terminal_width : Int?
 }
 
-///| 全局时间跟踪器实例
+///|
+/// 全局时间跟踪器实例
 let default_time_tracker : TimeTracker = { counter: 0.0, terminal_width: None }
 
-///| 获取当前时间（秒）- 使用计数器模拟时间
+///|
+/// 获取当前时间（秒）- 使用计数器模拟时间
 /// 注意：这是一个简化实现，实际应用中需要真实的系统时间
 fn current_time() -> Double {
   // 简化实现：每次调用增加0.1秒
@@ -213,7 +222,8 @@ fn current_time() -> Double {
   default_time_tracker.counter + 0.1
 }
 
-///| 获取终端宽度 - 简化实现
+///|
+/// 获取终端宽度 - 简化实现
 /// 注意：实际实现中应该调用系统API获取真实的终端宽度
 fn get_terminal_width() -> Int {
   match default_time_tracker.terminal_width {
@@ -222,28 +232,33 @@ fn get_terminal_width() -> Int {
   }
 }
 
-///| 设置终端宽度（用于测试和动态调整）
+///|
+/// 设置终端宽度（用于测试和动态调整）
 pub fn set_terminal_width(width : Int) -> Unit {
   // 简化实现：实际中需要修改全局状态
   println("设置终端宽度为: " + width.to_string())
 }
 
-///| 清除终端宽度设置，恢复默认检测
+///|
+/// 清除终端宽度设置，恢复默认检测
 pub fn clear_terminal_width() -> Unit {
   println("恢复默认终端宽度检测")
 }
 
-///| 创建初始时间信息
+///|
+/// 创建初始时间信息
 fn init_time_info() -> TimeInfo {
   let now = current_time()
   { start_time: now, last_update: now, last_print: now, last_n: 0, samples: [] }
 }
 
-///| 创建初始统计信息
+///|
+/// 创建初始统计信息
 fn init_stats() -> ProgressStats {
   { avg_time: 0.0, avg_rate: 0.0, smoothed_rate: 0.0, eta: 0.0, elapsed: 0.0 }
 }
 
+///|
 /// 创建新的进度条
 /// 
 /// 使用默认配置创建一个新的进度条实例。
@@ -283,6 +298,7 @@ pub fn new(total : Int) -> ProgressBar {
   }
 }
 
+///|
 /// 使用自定义配置创建进度条
 /// 
 /// 使用指定的配置创建进度条实例，允许完全自定义外观和行为。
@@ -326,7 +342,8 @@ pub fn new_with_config(total : Int, config : ProgressConfig) -> ProgressBar {
   }
 }
 
-///| 计算统计信息 - 增强版本
+///|
+/// 计算统计信息 - 增强版本
 fn compute_stats(self : ProgressBar, new_current : Int) -> ProgressStats {
   let now = current_time()
   let elapsed = now - self.time_info.start_time
@@ -385,6 +402,7 @@ fn compute_stats(self : ProgressBar, new_current : Int) -> ProgressStats {
   }
 }
 
+///|
 /// 更新进度条的当前进度值
 /// 
 /// 更新进度条的当前值，自动计算统计信息（速率、ETA等），并返回更新后的进度条实例。
@@ -468,6 +486,7 @@ pub fn update(self : ProgressBar, new_current : Int) -> ProgressBar {
   }
 }
 
+///|
 /// 增加进度（递增1）
 /// 
 /// 将当前进度值增加1，等同于 update(current + 1)。
@@ -502,12 +521,14 @@ pub fn increment(self : ProgressBar) -> ProgressBar {
   self.update(self.current + 1)
 }
 
-///| 增加指定数量的进度
+///|
+/// 增加指定数量的进度
 pub fn increment_by(self : ProgressBar, amount : Int) -> ProgressBar {
   self.update(self.current + amount)
 }
 
-///| 重置进度条
+///|
+/// 重置进度条
 pub fn reset_progress(self : ProgressBar) -> ProgressBar {
   {
     ..self,
@@ -519,17 +540,20 @@ pub fn reset_progress(self : ProgressBar) -> ProgressBar {
   }
 }
 
-///| 关闭进度条
+///|
+/// 关闭进度条
 pub fn close(self : ProgressBar) -> ProgressBar {
   { ..self, closed: true }
 }
 
-///| 设置总数
+///|
+/// 设置总数
 pub fn set_total(self : ProgressBar, new_total : Int) -> ProgressBar {
   { ..self, total: new_total }
 }
 
-///| 格式化时间（秒转换为人类可读格式）
+///|
+/// 格式化时间（秒转换为人类可读格式）
 fn format_time(seconds : Double) -> String {
   let total_secs = seconds.to_int()
   let hours = total_secs / 3600
@@ -553,7 +577,8 @@ fn format_time(seconds : Double) -> String {
   }
 }
 
-///| 格式化速率
+///|
+/// 格式化速率
 fn format_rate(rate : Double, unit : String, unit_scale : Bool) -> String {
   if unit_scale {
     if rate >= 1000000.0 {
@@ -568,7 +593,8 @@ fn format_rate(rate : Double, unit : String, unit_scale : Bool) -> String {
   }
 }
 
-///| 计算进度百分比
+///|
+/// 计算进度百分比
 pub fn percentage(self : ProgressBar) -> Double {
   if self.total <= 0 {
     0.0
@@ -577,7 +603,8 @@ pub fn percentage(self : ProgressBar) -> Double {
   }
 }
 
-///| 获取动态宽度
+///|
+/// 获取动态宽度
 fn get_dynamic_width(self : ProgressBar) -> Int {
   // 使用配置的列数或动态检测的终端宽度
   let terminal_cols = match self.config.ncols {
@@ -627,6 +654,7 @@ fn get_dynamic_width(self : ProgressBar) -> Int {
   }
 }
 
+///|
 /// 将进度条渲染为字符串
 /// 
 /// 根据当前配置和进度状态，生成进度条的字符串表示。这是显示进度条的核心方法。
@@ -759,7 +787,8 @@ pub fn render(self : ProgressBar) -> String {
   result
 }
 
-///| 智能打印进度条
+///|
+/// 智能打印进度条
 pub fn print_progress(self : ProgressBar) -> Unit {
   if self.closed {
     return
@@ -776,7 +805,8 @@ pub fn print_progress(self : ProgressBar) -> Unit {
   println(rendered)
 }
 
-///| 智能打印（带状态更新）
+///|
+/// 智能打印（带状态更新）
 pub fn print_with_update(self : ProgressBar) -> ProgressBar {
   let updated_time_info = { ..self.time_info, last_print: current_time() }
   let result = { ..self, time_info: updated_time_info }
@@ -784,6 +814,7 @@ pub fn print_with_update(self : ProgressBar) -> ProgressBar {
   result
 }
 
+///|
 /// 完成进度条
 /// 
 /// 将进度条设置为完成状态（current = total），打印最终结果，并根据配置决定是否保留显示。
@@ -843,6 +874,7 @@ pub fn finish(self : ProgressBar) -> ProgressBar {
   final_pb.close()
 }
 
+///|
 /// 设置进度条宽度
 /// 
 /// 设置进度条主体部分的字符宽度。不影响前缀、后缀等其他元素。
@@ -878,6 +910,7 @@ pub fn set_width(self : ProgressBar, width : Int) -> ProgressBar {
   { ..self, config: { ..self.config, width, } }
 }
 
+///|
 /// 设置前缀文本
 /// 
 /// 在进度条前面添加描述性文本，用于说明当前正在执行的任务。
@@ -912,21 +945,25 @@ pub fn set_prefix(self : ProgressBar, prefix : String) -> ProgressBar {
   { ..self, config: { ..self.config, prefix, } }
 }
 
-///| 设置后缀文本
+///|
+/// 设置后缀文本
 pub fn set_suffix(self : ProgressBar, suffix : String) -> ProgressBar {
   { ..self, config: { ..self.config, suffix, } }
 }
 
-///| 设置填充字符
+///|
+/// 设置填充字符
 pub fn set_fill(self : ProgressBar, fill : Char) -> ProgressBar {
   { ..self, config: { ..self.config, fill, } }
 }
 
-///| 设置空白字符
+///|
+/// 设置空白字符
 pub fn set_empty(self : ProgressBar, empty : Char) -> ProgressBar {
   { ..self, config: { ..self.config, empty, } }
 }
 
+///|
 /// 设置是否显示百分比
 /// 
 /// 控制是否在进度条前显示完成百分比。
@@ -963,6 +1000,7 @@ pub fn set_show_percent(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_percent: show } }
 }
 
+///|
 /// 设置是否显示计数
 /// 
 /// 控制是否显示当前值/总值的计数信息。
@@ -999,36 +1037,43 @@ pub fn set_show_count(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_count: show } }
 }
 
-///| 设置描述文本
+///|
+/// 设置描述文本
 pub fn set_desc(self : ProgressBar, desc : String) -> ProgressBar {
   { ..self, config: { ..self.config, desc, } }
 }
 
-///| 设置单位
+///|
+/// 设置单位
 pub fn set_unit(self : ProgressBar, unit : String) -> ProgressBar {
   { ..self, config: { ..self.config, unit, } }
 }
 
-///| 设置是否显示ETA
+///|
+/// 设置是否显示ETA
 pub fn set_show_eta(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_eta: show } }
 }
 
-///| 设置是否显示速率
+///|
+/// 设置是否显示速率
 pub fn set_show_rate(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_rate: show } }
 }
 
-///| 设置是否显示已用时间
+///|
+/// 设置是否显示已用时间
 pub fn set_show_elapsed(self : ProgressBar, show : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, show_elapsed: show } }
 }
 
-///| 设置是否启用平滑更新
+///|
+/// 设置是否启用平滑更新
 pub fn set_smooth(self : ProgressBar, smooth : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, smooth, } }
 }
 
+///|
 /// 设置动态宽度
 /// 
 /// 控制是否根据终端宽度自动调整进度条宽度。
@@ -1070,45 +1115,53 @@ pub fn set_dynamic_width(self : ProgressBar, dynamic : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, dynamic_width: dynamic } }
 }
 
-///| 设置终端列数
+///|
+/// 设置终端列数
 pub fn set_ncols(self : ProgressBar, ncols : Int?) -> ProgressBar {
   { ..self, config: { ..self.config, ncols, } }
 }
 
-///| 设置最小更新间隔（项目数）
+///|
+/// 设置最小更新间隔（项目数）
 pub fn set_miniters(self : ProgressBar, miniters : Int) -> ProgressBar {
   { ..self, config: { ..self.config, miniters, } }
 }
 
-///| 设置最小时间间隔（秒）
+///|
+/// 设置最小时间间隔（秒）
 pub fn set_mininterval(self : ProgressBar, mininterval : Double) -> ProgressBar {
   { ..self, config: { ..self.config, mininterval, } }
 }
 
-///| 设置是否启用单位缩放
+///|
+/// 设置是否启用单位缩放
 pub fn set_unit_scale(self : ProgressBar, unit_scale : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, unit_scale, } }
 }
 
-///| 设置嵌套进度条位置
+///|
+/// 设置嵌套进度条位置
 pub fn set_position(self : ProgressBar, position : Int) -> ProgressBar {
   { ..self, config: { ..self.config, position, } }
 }
 
 // ===== 嵌套进度条支持 =====
 
-///| 嵌套进度条管理器
+///|
+/// 嵌套进度条管理器
 pub struct NestedProgressManager {
   bars : Array[ProgressBar] // 进度条数组，按位置排序
   max_position : Int // 最大位置
 }
 
-///| 创建嵌套进度条管理器
+///|
+/// 创建嵌套进度条管理器
 pub fn create_nested_manager() -> NestedProgressManager {
   { bars: [], max_position: 0 }
 }
 
-///| 添加进度条到管理器
+///|
+/// 添加进度条到管理器
 pub fn add_progress_bar(
   self : NestedProgressManager,
   pb : ProgressBar,
@@ -1125,7 +1178,8 @@ pub fn add_progress_bar(
   }
 }
 
-///| 渲染所有嵌套进度条
+///|
+/// 渲染所有嵌套进度条
 pub fn render_nested(self : NestedProgressManager) -> String {
   let mut result = ""
   for i = 0; i <= self.max_position; i = i + 1 {
@@ -1140,7 +1194,8 @@ pub fn render_nested(self : NestedProgressManager) -> String {
   result
 }
 
-///| 更新指定位置的进度条
+///|
+/// 更新指定位置的进度条
 pub fn update_nested(
   self : NestedProgressManager,
   position : Int,
@@ -1157,12 +1212,14 @@ pub fn update_nested(
   { ..self, bars: new_bars }
 }
 
-///| 设置完成后是否保留
+///|
+/// 设置完成后是否保留
 pub fn set_leave(self : ProgressBar, leave : Bool) -> ProgressBar {
   { ..self, config: { ..self.config, leave, } }
 }
 
-///| 链式配置方法 - 批量设置
+///|
+/// 链式配置方法 - 批量设置
 pub fn configure(
   self : ProgressBar,
   f : (ProgressBar) -> ProgressBar,

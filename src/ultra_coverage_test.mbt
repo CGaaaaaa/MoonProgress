@@ -1,6 +1,7 @@
 // 超级覆盖率测试 - 尝试触发最难触发的代码路径
 
-///| 创建特殊配置的进度条来触发format函数的内部调用
+///|
+/// 创建特殊配置的进度条来触发format函数的内部调用
 fn create_format_triggering_pb() -> ProgressBar {
   new(1000000)
   .set_show_elapsed(true)
@@ -10,7 +11,8 @@ fn create_format_triggering_pb() -> ProgressBar {
   .set_unit("MB")
 }
 
-///| 通过大量操作来确保format_time的小时分支被调用
+///|
+/// 通过大量操作来确保format_time的小时分支被调用
 test "强制触发format_time小时分支" {
   let pb = create_format_triggering_pb()
 
@@ -31,7 +33,8 @@ test "强制触发format_time小时分支" {
   assert_eq(finished.closed, true)
 }
 
-///| 强制触发format_rate的所有数值分支
+///|
+/// 强制触发format_rate的所有数值分支
 test "强制触发format_rate所有分支" {
   // 测试普通数值(< 1000)
   let pb_small = new(100)
@@ -64,7 +67,8 @@ test "强制触发format_rate所有分支" {
   assert_eq(rendered_m.length() > 0, true)
 }
 
-///| 测试compute_stats中的所有条件分支
+///|
+/// 测试compute_stats中的所有条件分支
 test "compute_stats完整分支覆盖" {
   let pb = new(1000).set_smooth(true)
 
@@ -89,7 +93,8 @@ test "compute_stats完整分支覆盖" {
   assert_eq(pb_p3.current, 1500)
 }
 
-///| 测试delta_t = 0的极端情况
+///|
+/// 测试delta_t = 0的极端情况
 test "delta_t零值测试" {
   let pb = new(100)
 
@@ -99,7 +104,8 @@ test "delta_t零值测试" {
   assert_eq(pb2.current, 50)
 }
 
-///| 测试平滑速率计算的else分支
+///|
+/// 测试平滑速率计算的else分支
 test "平滑速率else分支测试" {
   let pb = new(1000).set_smooth(true)
 
@@ -114,7 +120,8 @@ test "平滑速率else分支测试" {
   assert_eq(pb3.current, 300)
 }
 
-///| 测试render中的条件分支组合
+///|
+/// 测试render中的条件分支组合
 test "render条件分支完整测试" {
   // 测试percentage < 100的情况
   let pb_partial = new(100).set_show_percent(true).update(99)
@@ -142,7 +149,8 @@ test "render条件分支完整测试" {
   assert_eq(rendered_static.length() > 0, true)
 }
 
-///| 测试样本数组remove的精确触发
+///|
+/// 测试样本数组remove的精确触发
 test "samples remove精确触发" {
   let mut pb = new(1000)
 
@@ -155,7 +163,8 @@ test "samples remove精确触发" {
   assert_eq(pb.current, 750)
 }
 
-///| 测试print_progress的返回条件
+///|
+/// 测试print_progress的返回条件
 test "print_progress返回条件测试" {
   // 测试closed状态的早期返回
   let pb_closed = new(100).update(50).close()
@@ -169,7 +178,8 @@ test "print_progress返回条件测试" {
   assert_eq(pb_interval.current, 25)
 }
 
-///| 测试get_dynamic_width的所有宽度计算
+///|
+/// 测试get_dynamic_width的所有宽度计算
 test "动态宽度所有计算分支" {
   // 测试所有组件都有宽度的情况
   let pb_full = new(100)
@@ -213,7 +223,8 @@ test "动态宽度所有计算分支" {
   assert_eq(rendered_narrow.length() > 0, true)
 }
 
-///| 测试嵌套管理器的边界情况
+///|
+/// 测试嵌套管理器的边界情况
 test "嵌套管理器边界完整测试" {
   let manager = create_nested_manager()
 
@@ -243,7 +254,8 @@ test "嵌套管理器边界完整测试" {
   assert_eq(found_update.max_position, 5)
 }
 
-///| 测试所有可能的set方法组合
+///|
+/// 测试所有可能的set方法组合
 test "set方法完整组合测试" {
   let pb = new(1000)
     .set_width(1) // 最小宽度

@@ -1,7 +1,8 @@
 // 简洁实用的进度条样式
 // 专注于黑白字符样式，提供最实用的几种选择
 
-///| 进度条样式枚举 - 简洁实用的5种样式
+///|
+/// 进度条样式枚举 - 简洁实用的5种样式
 pub enum ProgressStyle {
   Default // █ 和空格 - 经典实心样式
   Block // █ 和 ░ - 实心和浅色块对比
@@ -12,6 +13,7 @@ pub enum ProgressStyle {
 
 // 样式工厂函数
 
+///|
 /// 获取默认样式
 /// 
 /// 返回经典的实心块样式，使用 '█' 作为填充字符，空格作为空白字符。
@@ -31,6 +33,7 @@ pub fn default_style() -> ProgressStyle {
   Default
 }
 
+///|
 /// 获取块对比样式
 /// 
 /// 返回使用实心块和浅色块对比的样式，填充字符为 '█'，空白字符为 '░'。
@@ -50,6 +53,7 @@ pub fn block_style() -> ProgressStyle {
   Block
 }
 
+///|
 /// 获取箭头样式
 /// 
 /// 返回箭头指向样式，使用 '>' 作为填充字符，'-' 作为空白字符。
@@ -69,6 +73,7 @@ pub fn arrow_style() -> ProgressStyle {
   Arrow
 }
 
+///|
 /// 获取圆点样式
 /// 
 /// 返回圆点样式，使用实心圆点 '●' 和空心圆点 '○' 的组合。
@@ -88,6 +93,7 @@ pub fn dots_style() -> ProgressStyle {
   Dots
 }
 
+///|
 /// 获取ASCII兼容样式
 /// 
 /// 返回纯ASCII字符样式，使用 '#' 作为填充字符，'-' 作为空白字符。
@@ -107,6 +113,7 @@ pub fn hash_style() -> ProgressStyle {
   Hash
 }
 
+///|
 /// 根据样式创建配置
 /// 
 /// 将样式枚举转换为对应的 ProgressConfig 配置对象。
@@ -152,6 +159,7 @@ pub fn style_to_config(style : ProgressStyle) -> ProgressConfig {
   }
 }
 
+///|
 /// 使用指定样式创建进度条
 /// 
 /// 直接使用样式枚举创建进度条，是 new_with_config(total, style_to_config(style)) 的便捷方法。

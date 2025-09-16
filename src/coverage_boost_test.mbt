@@ -1,6 +1,7 @@
 // 专门针对未覆盖代码路径的测试
 
-///| 创建测试辅助函数来模拟时间流逝和速率计算
+///|
+/// 创建测试辅助函数来模拟时间流逝和速率计算
 fn create_pb_with_real_stats(total : Int, current : Int) -> ProgressBar {
   // 创建进度条并多次更新来产生真实的统计数据
   let mut pb = new(total)
@@ -15,7 +16,8 @@ fn create_pb_with_real_stats(total : Int, current : Int) -> ProgressBar {
   pb
 }
 
-///| 测试format_time的小时格式 - 通过模拟长时间运行
+///|
+/// 测试format_time的小时格式 - 通过模拟长时间运行
 test "format_time小时格式测试" {
   // 创建一个显示已用时间的进度条，通过多次更新来触发format_time的小时分支
   let pb = new(10000).set_show_elapsed(true).set_show_eta(true)
@@ -29,14 +31,16 @@ test "format_time小时格式测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试format_time的分钟格式
+///|
+/// 测试format_time的分钟格式
 test "format_time分钟格式测试" {
   let pb = new(1000).set_show_elapsed(true).set_show_eta(true).update(500)
   let rendered = pb.render()
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试format_rate的大数值单位缩放 (M单位)
+///|
+/// 测试format_rate的大数值单位缩放 (M单位)
 test "format_rate百万级单位测试" {
   // 尝试通过大数值更新来触发format_rate的M单位分支
   let pb = new(10000000)
@@ -52,7 +56,8 @@ test "format_rate百万级单位测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试format_rate的千级单位缩放 (k单位)
+///|
+/// 测试format_rate的千级单位缩放 (k单位)
 test "format_rate千级单位测试" {
   let pb = new(100000)
     .set_show_rate(true)
@@ -66,7 +71,8 @@ test "format_rate千级单位测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试get_terminal_width的Some分支
+///|
+/// 测试get_terminal_width的Some分支
 test "get_terminal_width的Some分支测试" {
   // 设置终端宽度以触发Some分支
   set_terminal_width(100)
@@ -78,7 +84,8 @@ test "get_terminal_width的Some分支测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试所有时间格式化分支的直接调用
+///|
+/// 测试所有时间格式化分支的直接调用
 test "时间和速率显示综合测试" {
   // 创建有实际速率和时间数据的进度条
   let pb = create_pb_with_real_stats(100, 50)
@@ -89,7 +96,8 @@ test "时间和速率显示综合测试" {
   assert_eq(rendered.length() > 0, true)
 }
 
-///| 测试ETA计算的各种情况
+///|
+/// 测试ETA计算的各种情况
 test "ETA计算边界测试" {
   // 测试ETA = 0的情况（已完成）
   let pb_complete = new(100).set_show_eta(true).update(100)
@@ -102,7 +110,8 @@ test "ETA计算边界测试" {
   assert_eq(rendered_partial.length() > 0, true)
 }
 
-///| 测试速率显示的边界条件
+///|
+/// 测试速率显示的边界条件
 test "速率显示边界条件测试" {
   // 测试速率为0的情况
   let pb_zero = new(100).set_show_rate(true).update(0)
@@ -115,7 +124,8 @@ test "速率显示边界条件测试" {
   assert_eq(rendered_with_rate.length() > 0, true)
 }
 
-///| 测试miniters的实际触发条件
+///|
+/// 测试miniters的实际触发条件
 test "miniters实际触发测试" {
   let pb = new(1000).set_miniters(50) // 设置较大的miniters
 
@@ -127,7 +137,8 @@ test "miniters实际触发测试" {
   assert_eq(pb2.current, 20)
 }
 
-///| 测试mininterval的触发
+///|
+/// 测试mininterval的触发
 test "mininterval触发测试" {
   let pb = new(100).set_mininterval(0.5).set_miniters(1)
 
@@ -138,7 +149,8 @@ test "mininterval触发测试" {
   assert_eq(pb3.current, 12)
 }
 
-///| 测试平滑速率计算的分支
+///|
+/// 测试平滑速率计算的分支
 test "平滑速率计算测试" {
   let pb = new(1000).set_smooth(true)
 
@@ -151,7 +163,8 @@ test "平滑速率计算测试" {
   assert_eq(pb4.percentage(), 40.0)
 }
 
-///| 测试样本点数组的边界情况
+///|
+/// 测试样本点数组的边界情况
 test "样本点数组管理测试" {
   let mut pb = new(100).set_smooth(true)
 
@@ -162,7 +175,8 @@ test "样本点数组管理测试" {
   assert_eq(pb.current, 75)
 }
 
-///| 测试动态宽度计算的各种配置
+///|
+/// 测试动态宽度计算的各种配置
 test "动态宽度计算详细测试" {
   // 测试所有配置项都开启的情况
   let pb_full = new(100)
@@ -191,7 +205,8 @@ test "动态宽度计算详细测试" {
   assert_eq(rendered_minimal.length() > 0, true)
 }
 
-///| 测试render函数的平滑进度分支
+///|
+/// 测试render函数的平滑进度分支
 test "render平滑进度测试" {
   // 测试平滑关闭的情况
   let pb_no_smooth = new(100).set_smooth(false).update(30)
@@ -204,7 +219,8 @@ test "render平滑进度测试" {
   assert_eq(rendered_smooth.length() > 0, true)
 }
 
-///| 测试所有显示选项的组合
+///|
+/// 测试所有显示选项的组合
 test "显示选项组合测试" {
   // 测试只显示ETA的情况
   let pb_eta_only = new(100)
@@ -240,7 +256,8 @@ test "显示选项组合测试" {
   assert_eq(rendered_minimal.length() > 0, true)
 }
 
-///| 测试百分比显示的边界情况
+///|
+/// 测试百分比显示的边界情况
 test "百分比显示边界测试" {
   // 测试恰好100%的情况
   let pb_100 = new(100).set_show_percent(true).update(100)
@@ -253,7 +270,8 @@ test "百分比显示边界测试" {
   assert_eq(rendered_99.contains("%"), true)
 }
 
-///| 测试闭合后打印的情况
+///|
+/// 测试闭合后打印的情况
 test "关闭后打印测试" {
   let pb = new(100).update(50).close()
 
